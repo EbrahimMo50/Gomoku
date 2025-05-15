@@ -29,7 +29,7 @@ game_over = False
 winner = None
 
 def draw_board():
-    """Draw the Gomoku board"""
+    # Draw the Gomoku board
     screen.fill(BROWN)
     
     # Draw grid lines
@@ -49,7 +49,7 @@ def draw_board():
                       (MARGIN + center * CELL_SIZE, MARGIN + center * CELL_SIZE), 5)
 
 def draw_pieces():
-    """Draw all the pieces on the board"""
+    # Draw all the pieces on the board
     for row in range(BOARD_SIZE):
         for col in range(BOARD_SIZE):
             if board[row][col] == "black":
@@ -65,7 +65,7 @@ def draw_pieces():
                                   PIECE_RADIUS, 1)
 
 def check_win(row, col):
-    """Check if the last move resulted in a win"""
+    # Check if the last move resulted in a win
     directions = [(1, 0), (0, 1), (1, 1), (1, -1)]  # horizontal, vertical, diagonal
     for dr, dc in directions:
         count = 1  # the piece just placed
@@ -89,7 +89,7 @@ def check_win(row, col):
     return False
 
 def show_game_over():
-    """Display the game over message"""
+    # Display the game over message
     font = pygame.font.Font(None, 36)
     if winner:
         text = font.render(f"{winner.capitalize()} wins! Click to restart.", True, BLACK)
@@ -100,7 +100,7 @@ def show_game_over():
     screen.blit(text, text_rect)
 
 def reset_game():
-    """Reset the game state"""
+    # Reset the game state
     global board, current_player, game_over, winner
     board = [[None for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
     current_player = "black"

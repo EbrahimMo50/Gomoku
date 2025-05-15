@@ -3,6 +3,8 @@ from Engine import Board
 from Engine import Manager
 from GUI import GuiManager
 from GUI import UtilizationGui
+from AI import AI
+import time
 
 gui = GuiManager.Gui()
 # Game loop
@@ -12,6 +14,7 @@ mode_selected = UtilizationGui.Constants.INVALID_MODE
 color_to_play = Board.Board.BLACK
 board = Board.Board()
 manager = Manager.Manager(board)
+ai = AI.AI()
 play_result = 0
 
 while(running):   
@@ -37,11 +40,42 @@ while(running):
                         if(play_result == -1):
                             color_to_play = 3 - color_to_play   # will invert the play to make him try again
 
-                # else:
-                #     AI TO PLAY 
+                # Solve this error plz @EbrahimMo50
+                # First one: User must click on the board for the AI to play
+                # Second one: Human vs AI is not working
+                elif(mode_selected == 3):
+                    # Ai vs Ai
+                    if(color_to_play == Board.Board.BLACK):
+                        print("Black AI to play")
+                    else :
+                        print("White AI to play")
+                    start_time = time.time()
+                    x,y = ai.ai_move(board)
+                    end_time = time.time()
+                    if (color_to_play == Board.Board.BLACK):
+                        print("Black AI played at: ", x, y)
+                        print("Time taken by Black AI: ", end_time - start_time)
+                    else:
+                        print("White AI played at: ", x, y)
+                        print("Time taken by White AI: ", end_time - start_time)
+                    play_result = manager.play(x,y,color_to_play)
+                    if(play_result == -1):
+                        color_to_play = 3 - color_to_play
+                
 
-                gui.update_board(board.matrix)
-                color_to_play = 3 - color_to_play
+                else:
+                    print("AI to play")
+                    start_time = time.time()
+                    x,y = ai.ai_move(board)
+                    end_time = time.time()
+                    print("Time taken by AI: ", end_time - start_time)
+                    color_to_play = Board.Board.WHITE
+                    play_result = manager.play(x,y,color_to_play)
+                    if(play_result == -1):
+                        color_to_play = 3 - color_to_play
+
+            gui.update_board(board.matrix)
+            color_to_play = 3 - color_to_play
 
             if(play_result != -1 and play_result != 0):
                 gui.show_game_over(play_result)
