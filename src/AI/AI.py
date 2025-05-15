@@ -33,7 +33,7 @@ class AI:
             'two': 10              # Two in a row with one end blocked
         }
     
-    def ai_move(self, board: Board) -> Tuple[int, int]:
+    def ai_move_with_pruning(self, board: Board) -> Tuple[int, int]:
         """
         Args:
             board: Current state of the board
@@ -65,8 +65,8 @@ class AI:
             board.matrix[row][col] = self.player_stone
             
             # Calculate score using minimax
-            score = self._minimax(board, self.max_depth - 1, False, alpha, beta)
-            
+            score = self._minimax_with_pruning(board, self.max_depth - 1, False, alpha, beta)
+
             # Undo the move
             board.matrix[row][col] = 0
             
@@ -80,7 +80,49 @@ class AI:
         
         return best_move
     
-    def _minimax(self, board: Board, depth: int, is_maximizing: bool, alpha: float, beta: float) -> float:
+    def ai_move_without_pruning(self, board: Board) -> Tuple[int, int]:
+        """
+        Args:
+            board: Current state of the board
+            
+        Returns:
+            Tuple of (row, col) for the best move
+        """
+        # Get all valid moves (empty cells)
+        valid_moves = self._get_valid_moves(board)
+        
+        # If this is the first move, play in the center or near center
+        if self._is_board_empty(board):
+            center = self.board_size // 2
+            return (center, center)
+        
+        # If there's only one valid move, take it
+        if len(valid_moves) == 1:
+            return valid_moves[0]
+        
+        # Use minimax without pruning to find the best move
+        best_score = float('-inf')
+        best_move = None
+        
+        for move in valid_moves:
+            row, col = move
+            # Make the move
+            board.matrix[row][col] = self.player_stone
+            
+            # Calculate score using minimax
+            score = self._minimax_without_pruning(board, self.max_depth - 1, False)
+            
+            # Undo the move
+            board.matrix[row][col] = 0
+            
+            # Update best move if needed
+            if score > best_score:
+                best_score = score
+                best_move = move
+        
+        return best_move
+    
+    def _minimax_with_pruning(self, board: Board, depth: int, is_maximizing: bool, alpha: float, beta: float) -> float:
         """
         Args:
             board: Current state of the board
@@ -115,12 +157,47 @@ class AI:
             for move in valid_moves:
                 row, col = move
                 board.matrix[row][col] = self.opponent_stone
-                eval = self._minimax(board, depth - 1, True, alpha, beta)
+                eval = self._minimax_with_pruning(board, depth - 1, True, alpha, beta)
                 board.matrix[row][col] = 0
                 min_eval = min(min_eval, eval)
                 beta = min(beta, eval)
                 if beta <= alpha:
                     break  # Alpha cutoff
+            return min_eval
+        
+    def _minimax_without_pruning(self, board: Board, depth: int, is_maximizing: bool) -> float:
+        """
+        Args:
+            board: Current state of the board
+            depth: Current depth in the search tree
+            is_maximizing: True if maximizing player's turn, False otherwise
+            
+        Returns:
+            Score for the current board state
+        """
+        # Check if game is over or max depth reached
+        if depth == 0 or self._is_terminal_state(board):
+            return self._evaluate_board(board)
+        
+        valid_moves = self._get_valid_moves(board)
+        
+        if is_maximizing:
+            max_eval = float('-inf')
+            for move in valid_moves:
+                row, col = move
+                board.matrix[row][col] = self.player_stone
+                eval = self._minimax_without_pruning(board, depth - 1, False)
+                board.matrix[row][col] = 0
+                max_eval = max(max_eval, eval)
+            return max_eval
+        else:
+            min_eval = float('inf')
+            for move in valid_moves:
+                row, col = move
+                board.matrix[row][col] = self.opponent_stone
+                eval = self._minimax_without_pruning(board, depth - 1, True)
+                board.matrix[row][col] = 0
+                min_eval = min(min_eval, eval)
             return min_eval
     
     def _get_valid_moves(self, board: Board) -> List[Tuple[int, int]]:

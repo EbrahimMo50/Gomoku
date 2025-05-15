@@ -45,19 +45,19 @@ while(running):
                 # Second one: Human vs AI is not working
                 elif(mode_selected == 3):
                     # Ai vs Ai
-                    if(color_to_play == Board.Board.BLACK):
-                        print("Black AI to play")
-                    else :
-                        print("White AI to play")
+                    print("Pruning AI to play")
                     start_time = time.time()
-                    x,y = ai.ai_move(board)
+                    x,y = ai.ai_move_with_pruning(board)
                     end_time = time.time()
-                    if (color_to_play == Board.Board.BLACK):
-                        print("Black AI played at: ", x, y)
-                        print("Time taken by Black AI: ", end_time - start_time)
-                    else:
-                        print("White AI played at: ", x, y)
-                        print("Time taken by White AI: ", end_time - start_time)
+                    print("Time taken by AI: ", end_time - start_time)
+                    color_to_play = Board.Board.WHITE
+                    play_result = manager.play(x,y,color_to_play)
+                    print("Minimax AI to play")
+                    start_time = time.time()
+                    x,y = ai.ai_move_without_pruning(board)
+                    end_time = time.time()
+                    print("Time taken by AI: ", end_time - start_time)
+                    color_to_play = Board.Board.BLACK
                     play_result = manager.play(x,y,color_to_play)
                     if(play_result == -1):
                         color_to_play = 3 - color_to_play
