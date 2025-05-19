@@ -40,23 +40,24 @@ while(running):
                         if(play_result == -1):
                             color_to_play = 3 - color_to_play   # will invert the play to make him try again
 
-                # Solve this error plz @EbrahimMo50
-                # First one: User must click on the board for the AI to play
-                # Second one: Human vs AI is not working
                 elif(mode_selected == 3):
                     # Ai vs Ai
-                    print("Pruning AI to play")
+                    print("Pruning White AI to play")
                     start_time = time.time()
                     x,y = ai.ai_move_with_pruning(board)
                     end_time = time.time()
                     print("Time taken by AI: ", end_time - start_time)
+                    print("Pruning AI played at X: ", x, "Y: ", y)
                     color_to_play = Board.Board.WHITE
                     play_result = manager.play(x,y,color_to_play)
-                    print("Minimax AI to play")
+                    print("======================")
+                    print("Minimax Black AI to play")
                     start_time = time.time()
                     x,y = ai.ai_move_without_pruning(board)
                     end_time = time.time()
                     print("Time taken by AI: ", end_time - start_time)
+                    print("Minimax AI played at X: ", x, "Y: ", y)
+                    print("======================")
                     color_to_play = Board.Board.BLACK
                     play_result = manager.play(x,y,color_to_play)
                     if(play_result == -1):
@@ -66,7 +67,7 @@ while(running):
                 else:
                     print("AI to play")
                     start_time = time.time()
-                    x,y = ai.ai_move(board)
+                    x,y = ai.ai_move_with_pruning(board)
                     end_time = time.time()
                     print("Time taken by AI: ", end_time - start_time)
                     color_to_play = Board.Board.WHITE

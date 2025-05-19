@@ -145,7 +145,7 @@ class AI:
             for move in valid_moves:
                 row, col = move
                 board.matrix[row][col] = self.player_stone
-                eval = self._minimax(board, depth - 1, False, alpha, beta)
+                eval = self._minimax_with_pruning(board, depth - 1, False, alpha, beta)
                 board.matrix[row][col] = 0
                 max_eval = max(max_eval, eval)
                 alpha = max(alpha, eval)
