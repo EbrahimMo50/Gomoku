@@ -70,6 +70,7 @@ while(running):
                     x,y = ai.ai_move_with_pruning(board)
                     end_time = time.time()
                     print("Time taken by AI: ", end_time - start_time)
+                    print("AI played at X: ", x, "Y: ", y)
                     color_to_play = Board.Board.WHITE
                     play_result = manager.play(x,y,color_to_play)
                     if(play_result == -1):
